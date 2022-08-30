@@ -1,0 +1,30 @@
+- name: Create destination directory
+  ansible.builtin.file:
+    path: ~/aap2
+    state: directory
+    mode: 0755
+
+- name: Extract AAP2 setup content
+  ansible.builtin.unarchive:
+    src: "{{ hostvars['localhost']['product_filename'] }}"
+    dest: ~/aap2
+
+- name: Get aap2 folder name
+  ansible.builtin.find:
+    paths: ~/aap2
+    file_type: directory
+  register: untar
+
+- name: Copy inventory for controller
+  ansible.builtin.template:
+    src: inventory-hub.j2
+    dest: "{{ untar.files[0].path }}/inventory"
+    mode: 0755
+
+- name: Install Automation Hub
+  ansible.builtin.shell:
+    cmd: ./setup.sh
+    chdir: "{{ untar.files[0].path }}"
+
+- name: Reboot server
+  ansible.builtin.reboot:
