@@ -2,9 +2,9 @@
 - name: Include controller setup tasks
   ansible.builtin.import_tasks:
     file: aap2-controller-setup.yml
-  when: aap2_setup_controller and inventory_hostname == 'controller'
+  when: aap2_setup_controller and inventory_hostname in groups['controller']
 
 - name: Include hub setup tasks
   ansible.builtin.import_tasks:
     file: aap2-hub-setup.yml
-  when: aap2_setup_hub and inventory_hostname == 'hub'
+  when: aap2_setup_hub and inventory_hostname in groups['hub']
