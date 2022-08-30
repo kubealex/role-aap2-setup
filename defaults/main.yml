@@ -2,3 +2,5 @@
 rhsm_user:
 rhsm_password:
 rhsm_pool_id:
+aap2_setup_hub:
+aap2_setup_controller:

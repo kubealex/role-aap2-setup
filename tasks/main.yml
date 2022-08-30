@@ -7,9 +7,9 @@
 - name: Include controller setup tasks
   ansible.builtin.include_tasks:
     file: aap2-controller-setup.yml
-  when: install_controller
+  when: aap2_setup_controller
 
 - name: Include hub setup tasks
   ansible.builtin.include_tasks:
     file: aap2-hub-setup.yml
-  when: install_hub
+  when: aap2_setup_hub
