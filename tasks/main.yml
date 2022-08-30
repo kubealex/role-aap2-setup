@@ -2,7 +2,7 @@
 # tasks file for role-aap2-setup
 - name: Include setup tasks
   ansible.builtin.include_tasks:
-    file: aap2-hub-setup.yml
+    file: aap2-package-setup.yml
 
 - name: Include controller setup tasks
   ansible.builtin.include_tasks:
