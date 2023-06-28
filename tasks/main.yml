@@ -8,8 +8,3 @@
   ansible.builtin.import_tasks:
     file: aap2-hub-setup.yml
   when: aap2_setup_hub and inventory_hostname in groups['hub']
-
-- name: Include servicecatalog setup tasks
-  ansible.builtin.import_tasks:
-    file: aap2-servicecatalog-setup.yml
-  when: aap2_setup_servicecatalog and inventory_hostname in groups['servicecatalog']

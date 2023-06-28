@@ -8,7 +8,7 @@
 - name: Enable required RHSM repositories
   community.general.rhsm_repository:
     name:
-      - ansible-automation-platform-2.3-for-rhel-9-x86_64-rpms
+      - ansible-automation-platform-2.4-for-rhel-9-x86_64-rpms
     state: enabled
 
 - name: Ensure all packages are updated
@@ -16,33 +16,21 @@
     name: '*'
     state: latest # noqa package-latest
 
-- name: Create destination directory
-  ansible.builtin.file:
-    path: ~/aap2
-    state: directory
-    mode: 0755
-
-- name: Extract AAP2 setup content
-  ansible.builtin.unarchive:
-    src: "{{ hostvars['localhost']['product_filename'] }}"
-    dest: ~/aap2
-
-- name: Retrieve AAP2 folder name
-  ansible.builtin.find:
-    paths: ~/aap2
-    file_type: directory
-  register: untar
+- name: Ensure all packages are updated
+  ansible.builtin.dnf:
+    name: 'ansible-automation-platform-installer'
+    state: present
 
 - name: Copy inventory for controller
   ansible.builtin.template:
     src: inventory-controller.j2
-    dest: "{{ untar.files[0].path }}/inventory"
-    mode: 0755
+    dest: "/opt/ansible-automation-platform/installer/inventory"
+    mode: "0755"
 
 - name: Install AAP2
   ansible.builtin.shell:
     cmd: ./setup.sh
-    chdir: "{{ untar.files[0].path }}"
+    chdir: /opt/ansible-automation-platform/installer
 
 - name: Reboot server
   ansible.builtin.reboot:
