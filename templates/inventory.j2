@@ -9,7 +9,7 @@
 # hybrid.example  node_type=hybrid
 # hybrid2.example <- this will default to hybrid
 
-{% if groups['controller'] | length > 0 %}
+{% if groups['controller'] is defined and groups['controller'] | length > 0 %}
 [automationcontroller]
 {% for controller in groups['controller'] %}
 {{ controller }} node_type=control
@@ -26,21 +26,21 @@
 # execution.example  node_type=execution
 # execution2.example <- this will default to execution
 
-{% if groups['execution_nodes'] | length > 0 %}
+{% if groups['execution_nodes'] is defined and groups['execution_nodes'] | length > 0 %}
 [execution_nodes]
 {% for exec_node in groups['execution_nodes'] %}
 {{ exec_node }} node_type=execution
 {% endfor %}
 {% endif %}
 
-{% if groups['hub'] | length > 0 %}
+{% if groups['hub'] is defined and groups['hub'] | length > 0 %}
 [automationhub]
 {% for hub in groups['hub'] %}
 {{ hub }}
 {% endfor %}
 {% endif %}
 
-{% if groups['eda'] | length > 0 %}
+{% if groups['eda'] is defined and groups['eda'] | length > 0 %}
 [automationedacontroller]
 {% for eda in groups['eda'] %}
 {{ eda }}
