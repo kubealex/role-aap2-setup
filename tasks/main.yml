@@ -1,15 +1,67 @@
----
-- name: Include controller setup tasks
-  ansible.builtin.import_tasks:
-    file: aap2-controller-setup.yml
-  when: aap2_setup_controller and inventory_hostname in groups['controller']
+- name: Register system with Red Hat Subscription Manager
+  community.general.redhat_subscription:
+    state: present
+    username: "{{ rhsm_user }}"
+    password: "{{ rhsm_password }}"
+    pool_ids: "{{ rhsm_pool_id }}"
 
-- name: Include hub setup tasks
-  ansible.builtin.import_tasks:
-    file: aap2-hub-setup.yml
-  when: aap2_setup_hub and inventory_hostname in groups['hub']
+- name: Enable required RHSM repositories
+  community.general.rhsm_repository:
+    name:
+      - ansible-automation-platform-2.4-for-rhel-9-x86_64-rpms
+    state: enabled
 
-- name: Include eda setup tasks
-  ansible.builtin.import_tasks:
-    file: aap2-eda-setup.yml
-  when: aap2_setup_eda and inventory_hostname in groups['eda']
+- name: Ensure all packages are updated
+  ansible.builtin.dnf:
+    name: '*'
+    state: latest # noqa package-latest
+
+- name: Ensure all packages are updated
+  ansible.builtin.dnf:
+    name: 'ansible-automation-platform-installer'
+    state: present
+
+- name: Copy inventory for Automation Platform
+  ansible.builtin.template:
+    src: inventory.j2
+    dest: "/opt/ansible-automation-platform/installer/inventory"
+    mode: "0755"
+
+- name: Configure SSL
+  when: aap_configure_ssl
+  block:
+    - name: Copy CA and certs for SSL configuration
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: /opt/ansible-automation-platform/installer/{{ item }}
+        mode: "0755"
+      loop:
+        - "{{ aap_ca }}"
+
+    - name: Copy CA and certs for SSL configuration
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: /opt/ansible-automation-platform/installer/{{ item }}
+        mode: "0755"
+      loop:
+        - "{{ aap_controller_cert }}"
+        - "{{ aap_controller_key }}"
+      when: controller_configure_ssl
+
+    - name: Copy CA and certs for SSL configuration
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: /opt/ansible-automation-platform/installer/{{ item }}
+        mode: "0755"
+      loop:
+        - "{{ aap_hub_cert }}"
+        - "{{ aap_hub_key }}"
+      when: hub_configure_ssl
+
+- name: Install Automation Platform
+  ansible.builtin.shell:
+    cmd: ./setup.sh
+    chdir: /opt/ansible-automation-platform/installer
+
+- name: Reboot server
+  ansible.builtin.reboot:
