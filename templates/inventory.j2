@@ -77,6 +77,14 @@ automationhub_pg_database='automationhub'
 automationhub_pg_username='automationhub'
 automationhub_pg_password='redhat'
 
+{% if aap_configure_content_signing %}
+automationhub_create_default_collection_signing_service = True
+automationhub_auto_sign_collections = True
+automationhub_require_content_approval = True
+automationhub_collection_signing_service_key = {{ aap_content_signing_key }}
+automationhub_collection_signing_service_script = {{ aap_content_signign_script }}
+{% endif %}
+
 # The default install will deploy a TLS enabled Automation Hub.
 # If for some reason this is not the behavior wanted one can
 # disable TLS enabled deployment.
