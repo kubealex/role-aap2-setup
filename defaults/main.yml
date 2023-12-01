@@ -3,3 +3,4 @@ rhsm_user:
 rhsm_password:
 rhsm_pool_id:
 aap_configure_ssl: false
+aap_configure_content_signing: false
