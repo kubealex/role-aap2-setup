@@ -105,19 +105,20 @@ automationhub_collection_signing_service_script = /opt/ansible-automation-platfo
 custom_ca_cert=/opt/ansible-automation-platform/installer/{{ aap_ca }}
 
 {% if controller_configure_ssl %}
-
 # Certificate and key to install in nginx for the web UI and API
-
 web_server_ssl_cert=/opt/ansible-automation-platform/installer/{{ aap_controller_cert }}
 web_server_ssl_key=/opt/ansible-automation-platform/installer/{{ aap_controller_key }}
 {% endif %}
 
 {% if hub_configure_ssl %}
-
 # Certificate and key to install in Automation Hub node
 automationhub_ssl_cert=/opt/ansible-automation-platform/installer/{{ aap_hub_cert }}
 automationhub_ssl_key=/opt/ansible-automation-platform/installer/{{ aap_hub_key }}
+{% endif %}
 
+{% if hub_configure_ssl %}
+automationedacontroller_ssl_cert=/opt/ansible-automation-platform/installer/{{ aap_eda_cert }}
+automationedacontroller_ssl_key=/opt/ansible-automation-platform/installer/{{ aap_eda_key }}
 {% endif %}
 
 # Server-side SSL settings for PostgreSQL (when we are installing it).

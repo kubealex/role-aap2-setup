@@ -58,6 +58,16 @@
         - "{{ aap_hub_key }}"
       when: hub_configure_ssl
 
+    - name: Copy CA and certs for SSL configuration
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: /opt/ansible-automation-platform/installer/{{ item }}
+        mode: "0755"
+      loop:
+        - "{{ aap_eda_cert }}"
+        - "{{ aap_eda_key }}"
+      when: eda_configure_ssl
+
 - name: Configure Content Signing
   when: aap_configure_content_signing
   block:
