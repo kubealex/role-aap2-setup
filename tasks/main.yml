@@ -3,7 +3,7 @@
     state: present
     username: "{{ rhsm_user }}"
     password: "{{ rhsm_password }}"
-    pool_ids: "{{ rhsm_pool_id }}"
+    # pool_ids: "{{ rhsm_pool_id }}"
 
 - name: Enable required RHSM repositories
   community.general.rhsm_repository:
