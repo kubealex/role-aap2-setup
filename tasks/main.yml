@@ -8,7 +8,7 @@
 - name: Enable required RHSM repositories
   community.general.rhsm_repository:
     name:
-      - ansible-automation-platform-2.4-for-rhel-9-x86_64-rpms
+      - ansible-automation-platform-2.5-for-rhel-9-x86_64-rpms
     state: enabled
 
 - name: Ensure all packages are updated
@@ -57,6 +57,16 @@
         - "{{ aap_hub_cert }}"
         - "{{ aap_hub_key }}"
       when: hub_configure_ssl
+
+    - name: Copy CA and certs for SSL configuration
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: /opt/ansible-automation-platform/installer/{{ item }}
+        mode: "0755"
+      loop:
+        - "{{ aap_gw_cert }}"
+        - "{{ aap_gw_key }}"
+      when: gw_configure_ssl
 
     - name: Copy CA and certs for SSL configuration
       ansible.builtin.copy:
