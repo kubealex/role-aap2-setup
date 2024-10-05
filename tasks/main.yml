@@ -73,6 +73,11 @@
         - "{{ aap_ca_cert }}"
         - "{{ aap_ca_key }}"
 
+- name: Configure SSL
+  when:
+    - aap_configure_ssl
+    - aap_setup_rpm
+  block:
     - name: Copy CA and certs for SSL configuration
       ansible.builtin.copy:
         src: "{{ item }}"
