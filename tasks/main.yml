@@ -76,6 +76,7 @@
 - name: Configure SSL
   when:
     - aap_configure_ssl
+    - aap_setup_rpm is defined
     - aap_setup_rpm
   block:
     - name: Copy CA and certs for SSL configuration
