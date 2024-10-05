@@ -84,3 +84,10 @@ ca_tls_cert=/opt/ansible-automation-platform/installer/{{ aap_ca_cert }}
 ca_tls_key=/opt/ansible-automation-platform/installer/{{ aap_ca_key }}
 
 {% endif %}
+
+{% if aap_configure_content_signing %}
+hub_collection_signing=true
+hub_container_signing=true
+hub_collection_signing_key = /opt/ansible-automation-platform/installer/{{ aap_content_signing_key }}
+hub_container_signing_key = /opt/ansible-automation-platform/installer/{{ aap_content_signing_key }}
+{% endif %}

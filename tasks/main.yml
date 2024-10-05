@@ -44,11 +44,22 @@
           - rsync 
           - vim
           - ansible-core
+          
     - name: Copy inventory for Automation Platform
+      when: aap_setup_single_node is not defined
+      ansible.builtin.template:
+        src: inventory_container.j2
+        dest: "/opt/ansible-automation-platform/installer/inventory"
+        mode: "0755"    
+
+    - name: Copy inventory for Automation Platform
+      when: 
+        - aap_setup_single_node is defined
+        - aap_setup_single_node
       ansible.builtin.template:
         src: inventory_container_single.j2
         dest: "/opt/ansible-automation-platform/installer/inventory"
-        mode: "0755"    
+        mode: "0755" 
 
 - name: Configure SSL
   when: aap_configure_ssl
