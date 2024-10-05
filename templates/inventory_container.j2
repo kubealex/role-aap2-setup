@@ -7,42 +7,42 @@
 {% if groups['controller'] is defined and groups['controller'] | length > 0 %}
 [automationcontroller]
 {% for controller in groups['controller'] %}
-{{ controller }}
+{{ controller }} ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 {% endfor %}
 {% endif %}
 
 {% if groups['execution_nodes'] is defined and groups['execution_nodes'] | length > 0 %}
 [execution_nodes]
 {% for exec_node in groups['execution_nodes'] %}
-{{ exec_node }} node_type=execution
+{{ exec_node }} node_type=execution ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 {% endfor %}
 {% endif %}
 
 {% if groups['hub'] is defined and groups['hub'] | length > 0 %}
 [automationhub]
 {% for hub in groups['hub'] %}
-{{ hub }}
+{{ hub }} ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 {% endfor %}
 {% endif %}
 
 {% if groups['eda'] is defined and groups['eda'] | length > 0 %}
 [automationedacontroller]
 {% for eda in groups['eda'] %}
-{{ eda }}
+{{ eda }} ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 {% endfor %}
 {% endif %}
 
 {% if groups['gateway'] is defined and groups['gateway'] | length > 0 %}
 [automationgateway]
 {% for gateway in groups['gateway'] %}
-{{ gateway }}
+{{ gateway }} ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 {% endfor %}
 {% endif %}
 
 {% if groups['database'] is defined and groups['database'] | length > 0 %}
 [database]
 {% for database in groups['database'] %}
-{{ database }}
+{{ database }} ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 {% endfor %}
 {% endif %}
 
