@@ -123,6 +123,7 @@
     chdir: /opt/ansible-automation-platform/installer
 
 - name: Install Automation Platform
+  become: false
   when:
     - aap_setup_container is defined 
     - aap_setup_container
