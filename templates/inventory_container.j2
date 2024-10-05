@@ -1,0 +1,124 @@
+# This is the AAP enterprise installer inventory file
+# Please consult the docs if you're unsure what to add
+# For all optional variables please consult the included README.md
+# or the Red Hat documentation:
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation
+
+# This section is for your AAP Gateway host(s)
+# -----------------------------------------------------
+[automationgateway]
+aap-lab.ansiblelab.com ansible_connection=local
+
+# This section is for your AAP Controller host(s)
+# -----------------------------------------------------
+{% if not aap_install_single_node %}
+
+{% if groups['controller'] is defined and groups['controller'] | length > 0 %}
+[automationcontroller]
+{% for controller in groups['controller'] %}
+{{ controller }}
+{% endfor %}
+{% endif %}
+
+{% if groups['execution_nodes'] is defined and groups['execution_nodes'] | length > 0 %}
+[execution_nodes]
+{% for exec_node in groups['execution_nodes'] %}
+{{ exec_node }} node_type=execution
+{% endfor %}
+{% endif %}
+
+{% if groups['hub'] is defined and groups['hub'] | length > 0 %}
+[automationhub]
+{% for hub in groups['hub'] %}
+{{ hub }}
+{% endfor %}
+{% endif %}
+
+{% if groups['eda'] is defined and groups['eda'] | length > 0 %}
+[automationedacontroller]
+{% for eda in groups['eda'] %}
+{{ eda }}
+{% endfor %}
+{% endif %}
+
+{% if groups['gateway'] is defined and groups['gateway'] | length > 0 %}
+[automationgateway]
+{% for gateway in groups['gateway'] %}
+{{ gateway }}
+{% endfor %}
+{% endif %}
+
+{% if groups['database'] is defined and groups['database'] | length > 0 %}
+[database]
+{% for database in groups['database'] %}
+{{ database }}
+{% endfor %}
+{% endif %}
+
+{% endif %}
+
+
+[automationcontroller]
+aap-lab.ansiblelab.com ansible_connection=local
+
+# This section is for your AAP Execution host(s)
+# -----------------------------------------------------
+#[execution_nodes]
+#aap-lab.ansiblelab.com ansible_connection=local
+
+# This section is for your AAP Automation Hub host(s)
+# -----------------------------------------------------
+[automationhub]
+aap-lab.ansiblelab.com ansible_connection=local
+
+# This section is for your AAP EDA Controller host(s)
+# -----------------------------------------------------
+[automationeda]
+aap-lab.ansiblelab.com ansible_connection=local
+
+[redis]
+aap-lab.ansiblelab.com ansible_connection=local
+
+[database]
+aap-lab.ansiblelab.com ansible_connection=local
+
+[all:vars]
+
+# Common variables
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-general-inventory-variables
+# -----------------------------------------------------
+postgresql_admin_username=postgres
+postgresql_admin_password=redhat
+registry_username={{ rhsm_user }}
+registry_password={{ rhsm_password }}
+redis_mode=standalone
+
+# If using the online (non-bundled) installer, you need to set RHN registry credentials
+
+# AAP Gateway
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-gateway-variables
+# -----------------------------------------------------
+gateway_admin_password=redhat
+gateway_pg_host=aap-lab.ansiblelab.com
+gateway_pg_password=redhat
+
+# AAP Controller
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-controller-variables
+# -----------------------------------------------------
+controller_admin_password=redhat
+controller_pg_host=aap-lab.ansiblelab.com
+controller_pg_password=redhat
+
+# AAP Automation Hub
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-hub-variables
+# -----------------------------------------------------
+hub_admin_password=redhat
+hub_pg_host=aap-lab.ansiblelab.com
+hub_pg_password=redhat
+
+# AAP EDA Controller
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#event-driven-ansible-controller
+# -----------------------------------------------------
+eda_admin_password=redhat
+eda_pg_host=aap-lab.ansiblelab.com
+eda_pg_password=redhat

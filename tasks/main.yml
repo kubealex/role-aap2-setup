@@ -3,29 +3,48 @@
     state: present
     username: "{{ rhsm_user }}"
     password: "{{ rhsm_password }}"
-    # pool_ids: "{{ rhsm_pool_id }}"
-
-- name: Enable required RHSM repositories
-  community.general.rhsm_repository:
-    name:
-      - ansible-automation-platform-2.5-for-rhel-9-x86_64-rpms
-    state: enabled
 
 - name: Ensure all packages are updated
   ansible.builtin.dnf:
     name: '*'
     state: latest # noqa package-latest
 
-- name: Ensure all packages are updated
-  ansible.builtin.dnf:
-    name: 'ansible-automation-platform-installer'
-    state: present
+- name: Configure package for RPM setup
+  when: aap_setup_rpm
+  block:
+    - name: Enable required RHSM repositories
+      community.general.rhsm_repository:
+        name:
+          - ansible-automation-platform-2.5-for-rhel-9-x86_64-rpms
+        state: enabled
 
-- name: Copy inventory for Automation Platform
-  ansible.builtin.template:
-    src: inventory.j2
-    dest: "/opt/ansible-automation-platform/installer/inventory"
-    mode: "0755"
+    - name: Install AAP2 RPM
+      ansible.builtin.dnf:
+        name: 'ansible-automation-platform-installer'
+        state: present
+
+    - name: Copy inventory for Automation Platform
+      ansible.builtin.template:
+        src: inventory_rpm.j2
+        dest: "/opt/ansible-automation-platform/installer/inventory"
+        mode: "0755"
+
+- name: Configure system for container setup
+  when: aap_setup_container
+  block:
+    - name: Ensure required packages are present
+      ansible.builtin.dnf:
+        name: 
+          - wget 
+          - git-core 
+          - rsync 
+          - vim
+          - ansible-core
+    - name: Copy inventory for Automation Platform
+      ansible.builtin.template:
+        src: inventory_container_single.j2
+        dest: "/opt/ansible-automation-platform/installer/inventory"
+        mode: "0755"    
 
 - name: Configure SSL
   when: aap_configure_ssl
@@ -36,7 +55,8 @@
         dest: /opt/ansible-automation-platform/installer/{{ item }}
         mode: "0755"
       loop:
-        - "{{ aap_ca }}"
+        - "{{ aap_ca_cert }}"
+        - "{{ aap_ca_key }}"
 
     - name: Copy CA and certs for SSL configuration
       ansible.builtin.copy:
@@ -91,8 +111,15 @@
         - "{{ aap_content_signing_script }}"
 
 - name: Install Automation Platform
+  when: aap_setup_rpm
   ansible.builtin.shell:
     cmd: ./setup.sh
+    chdir: /opt/ansible-automation-platform/installer
+
+- name: Install Automation Platform
+  when: aap_setup_rpm
+  ansible.builtin.shell:
+    cmd: ansible-playbook -i inventory ansible.containerized_installer.install
     chdir: /opt/ansible-automation-platform/installer
 
 - name: Reboot server

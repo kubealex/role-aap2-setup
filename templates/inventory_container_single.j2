@@ -1,0 +1,112 @@
+# This is the AAP enterprise installer inventory file
+# Please consult the docs if you're unsure what to add
+# For all optional variables please consult the included README.md
+# or the Red Hat documentation:
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation
+
+# This section is for your AAP Gateway host(s)
+# -----------------------------------------------------
+[automationgateway]
+{{ groups['platform'][0] }} ansible_connection=local
+
+# This section is for your AAP Controller host(s)
+
+[automationcontroller]
+{{ groups['platform'][0] }} ansible_connection=local
+
+# This section is for your AAP Execution host(s)
+# -----------------------------------------------------
+#[execution_nodes]
+#{{ groups['platform'][0] }} ansible_connection=local
+
+# This section is for your AAP Automation Hub host(s)
+# -----------------------------------------------------
+[automationhub]
+{{ groups['platform'][0] }} ansible_connection=local
+
+# This section is for your AAP EDA Controller host(s)
+# -----------------------------------------------------
+[automationeda]
+{{ groups['platform'][0] }} ansible_connection=local
+
+[redis]
+{{ groups['platform'][0] }} ansible_connection=local
+
+[database]
+{{ groups['platform'][0] }} ansible_connection=local
+
+[all:vars]
+
+# Common variables
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-general-inventory-variables
+# -----------------------------------------------------
+postgresql_admin_username=postgres
+postgresql_admin_password=redhat
+registry_username={{ rhsm_user }}
+registry_password={{ rhsm_password }}
+redis_mode=standalone
+
+# If using the online (non-bundled) installer, you need to set RHN registry credentials
+
+# AAP Gateway
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-gateway-variables
+# -----------------------------------------------------
+gateway_admin_password=redhat
+gateway_pg_host={{ groups['platform'][0] }}
+gateway_pg_password=redhat
+
+# AAP Controller
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-controller-variables
+# -----------------------------------------------------
+controller_admin_password=redhat
+controller_pg_host={{ groups['platform'][0] }}
+controller_pg_password=redhat
+
+# AAP Automation Hub
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-hub-variables
+# -----------------------------------------------------
+hub_admin_password=redhat
+hub_pg_host={{ groups['platform'][0] }}
+hub_pg_password=redhat
+
+# AAP EDA Controller
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#event-driven-ansible-controller
+# -----------------------------------------------------
+eda_admin_password=redhat
+eda_pg_host={{ groups['platform'][0] }}
+eda_pg_password=redhat
+
+{% if aap_configure_ssl %}
+# SSL-related variables
+# If set, this will install a custom CA certificate to the system trust store.
+
+ca_tls_cert=/opt/ansible-automation-platform/installer/{{ aap_ca_cert }}
+ca_tls_key=/opt/ansible-automation-platform/installer/{{ aap_ca_key }}
+
+{% if controller_configure_ssl %}
+# Certificate and key to install in nginx for the web UI and API
+controller_tls_cert=/opt/ansible-automation-platform/installer/{{ aap_controller_cert }}
+controller_tls_key=/opt/ansible-automation-platform/installer/{{ aap_controller_key }}
+{% endif %}
+
+{% if hub_configure_ssl %}
+# Certificate and key to install in Automation Hub node
+hub_tls_cert=/opt/ansible-automation-platform/installer/{{ aap_hub_cert }}
+hub_tls_cert=/opt/ansible-automation-platform/installer/{{ aap_hub_key }}
+{% endif %}
+
+{% if eda_configure_ssl %}
+eda_tls_cert=/opt/ansible-automation-platform/installer/{{ aap_eda_cert }}
+eda_tls_key=/opt/ansible-automation-platform/installer/{{ aap_eda_key }}
+{% endif %}
+
+{% if gw_configure_ssl %}
+gateway_tls_cert=/opt/ansible-automation-platform/installer/{{ aap_gw_cert }}
+gateway_tls_key=/opt/ansible-automation-platform/installer/{{ aap_gw_key }}
+{% endif %}
+
+# Server-side SSL settings for PostgreSQL (when we are installing it).
+# postgres_use_ssl=False
+# postgres_ssl_cert=/path/to/pgsql.crt
+# postgres_ssl_key=/path/to/pgsql.key
+{% endif %}
