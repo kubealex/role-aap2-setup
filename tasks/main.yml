@@ -146,6 +146,3 @@
   ansible.builtin.shell:
     cmd: ansible-playbook -i inventory ansible.containerized_installer.install
     chdir: /opt/ansible-automation-platform/installer
-
-- name: Reboot server
-  ansible.builtin.reboot:
