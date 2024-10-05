@@ -46,7 +46,7 @@
           - ansible-core
           
     - name: Copy inventory for Automation Platform
-      when: aap_setup_single_node is not defined
+      when: aap_setup_single_node is not defined or not aap_setup_single_node
       ansible.builtin.template:
         src: inventory_container.j2
         dest: "/opt/ansible-automation-platform/installer/inventory"
