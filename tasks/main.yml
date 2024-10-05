@@ -10,7 +10,9 @@
     state: latest # noqa package-latest
 
 - name: Configure package for RPM setup
-  when: aap_setup_rpm
+  when: 
+    - aap_setup_rpm is defined
+    - aap_setup_rpm
   block:
     - name: Enable required RHSM repositories
       community.general.rhsm_repository:
@@ -30,7 +32,9 @@
         mode: "0755"
 
 - name: Configure system for container setup
-  when: aap_setup_container
+  when:
+    - aap_setup_container is defined 
+    - aap_setup_container  
   block:
     - name: Ensure required packages are present
       ansible.builtin.dnf:
@@ -111,13 +115,17 @@
         - "{{ aap_content_signing_script }}"
 
 - name: Install Automation Platform
-  when: aap_setup_rpm
+  when: 
+    - aap_setup_rpm is defined
+    - aap_setup_rpm
   ansible.builtin.shell:
     cmd: ./setup.sh
     chdir: /opt/ansible-automation-platform/installer
 
 - name: Install Automation Platform
-  when: aap_setup_container
+  when:
+    - aap_setup_container is defined 
+    - aap_setup_container
   ansible.builtin.shell:
     cmd: ansible-playbook -i inventory ansible.containerized_installer.install
     chdir: /opt/ansible-automation-platform/installer
