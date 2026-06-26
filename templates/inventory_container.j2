@@ -46,6 +46,13 @@
 {% endfor %}
 {% endif %}
 
+{% if groups['metrics'] is defined and groups['metrics'] | length > 0 %}
+[database]
+{% for database in groups['metrics'] %}
+{{ database }} ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+{% endfor %}
+{% endif %}
+
 [all:vars]
 
 # Common variables
