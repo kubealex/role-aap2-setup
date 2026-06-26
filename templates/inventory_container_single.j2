@@ -81,6 +81,12 @@ eda_admin_password=redhat
 eda_pg_host={{ groups['platform'][0] }}
 eda_pg_password=redhat
 
+
+automationmetrics_pg_host={{ groups['platform'][0] }}
+automationmetrics_pg_password=redhat
+automationmetrics_controller_read_pg_host={{ groups['platform'][0] }}
+automationmetrics_controller_read_pg_password=redhat
+
 {% if aap_configure_ssl %}
 # SSL-related variables
 # If set, this will use a custom CA certificate to sign the certificate for all services
