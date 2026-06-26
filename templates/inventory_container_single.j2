@@ -4,6 +4,11 @@
 # or the Red Hat documentation:
 # https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation
 
+# This section is for your AAP Metric host(s)
+# -----------------------------------------------------
+[automationmetrics]
+{{ groups['platform'][0] }} ansible_connection=local
+
 # This section is for your AAP Gateway host(s)
 # -----------------------------------------------------
 [automationgateway]
